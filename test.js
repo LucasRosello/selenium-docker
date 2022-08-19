@@ -21,8 +21,14 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
 
     let userInput =
        await driver.wait(until.elementLocated(By.id('input_0')), 10000);
+       await userInput.sendKeys(process.env.WINA_USER)
 
-       await userInput.sendKeys("hola")
+    let passInput = await driver.wait(until.elementLocated(By.id('input_0')), 10000);
+    await passInput.sendKeys(process.env.WINA_PASS)
+
+    let loginButton = await driver.wait(until.elementLocated(By.id('btnIngresar')), 10000);
+    await loginButton.click()
+
 
        driver.await(50000, TimeUnit.Milliseconds)
     /*
