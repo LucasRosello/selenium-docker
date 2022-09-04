@@ -32,18 +32,51 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
 
     await driver.get("https://allaria-ssl.allaria.com.ar/AllariaOnline/VBolsaNet/desktop.html#!/tenenciaval");
 
-    // fake id for waiting
-    await driver.wait(until.elementLocated(By.id('fakeid')), 10000);
 
-    //pnlTV_container
-       
-    /*
-      let button =
-       await driver.wait(until.elementLocated(By.id('foo')), 10000);
-   await button.click();
-*/
 
+
+
+
+
+    const nombres = new Map();
+
+    function limpiarTexto(nombre){
+        nombre = nombre.replace("Rescatar","")
+        if(nombre.substring(nombre.length-2,nombre.length) == "  "){
+            return nombre.replace("  ","")
+        }
+    }
     
+    
+
+    let table = await driver.wait(until.elementLocated(By.id('pnlTV')), 20000);
+    let rows = await driver.findElements(By.xpath("/html/body/div[3]/md-content/md-content/div[1]/ng-view/div/div[2]/div/div/div/ng-transclude/div[2]/div/div[1]/table/tbody/tr"))
+
+    console.log((await rows).length)
+
+
+
+  var inversiones =  [];
+
+
+    for (let i = 1; i <= (await rows).length; i++) {
+   
+     var nombre = await driver.findElement(By.xpath("/html/body/div[3]/md-content/md-content/div[1]/ng-view/div/div[2]/div/div/div/ng-transclude/div[2]/div/div[1]/table/tbody/tr["+i+"]/td[2]")).getText()
+    nombre = limpiarTexto(nombre)
+    if (typeof nombre ==='string'){
+      saldo = await driver.findElement(By.xpath("/html/body/div[3]/md-content/md-content/div[1]/ng-view/div/div[2]/div/div/div/ng-transclude/div[2]/div/div[1]/table/tbody/tr["+i+"]/td[8]")).getText()
+      inversion = {
+        "id": i,
+        "nombre": nombre,
+        "saldo": saldo
+      }
+      inversiones.push(inversion)
+    }
+    }
+
+    console.log(inversiones)
+
+
   } finally {
     driver.quit();
   }
