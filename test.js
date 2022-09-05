@@ -16,8 +16,6 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
     // Navigate to Url
     console.log("corriendo")
     await driver.get("https://allaria-ssl.allaria.com.ar/AllariaOnline/VBolsaNet/login.html");
-    await driver.wait(until.titleIs('ALLARIA LEDESMA & CIA. S.A'), 1000);
-    console.log(await driver.getTitle())
 
     let userInput = await driver.wait(until.elementLocated(By.id('input_0')), 10000);
     await userInput.sendKeys(process.env.WINA_USER)
@@ -28,7 +26,7 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
     let loginButton = await driver.wait(until.elementLocated(By.id('btnIngresar')), 10000);
     await loginButton.click()
 
-    await driver.wait(until.elementLocated(By.xpath('/html/body/div[3]/md-content/md-content/div[1]/ng-view/div/div[2]/div/div/div/div/div/ng-transclude/div[1]/span[1]/div')), 20000);
+    await driver.wait(until.elementLocated(By.xpath('/html/body/div[3]/md-content/md-content/div[1]/ng-view/div/div[2]/div/div/div/div/div/ng-transclude/div[1]/span[1]/div')), 100000);
 
     await driver.get("https://allaria-ssl.allaria.com.ar/AllariaOnline/VBolsaNet/desktop.html#!/tenenciaval");
 
@@ -77,7 +75,29 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
     console.log(inversiones)
 
 
+
+
+enviarMensaje(inversiones)
+
   } finally {
     driver.quit();
   }
 })();
+
+
+function enviarMensaje(inversiones){
+
+  var mensaje = "Hola, este es el resumen diario de Inversiones: \n\n"
+
+  for(i = 0; i < inversiones.length; i++){
+    mensaje = mensaje + inversiones[i].nombre + " tiene un saldo de " + inversiones[i].saldo + "\n"
+
+  }
+
+  var XMLHttpRequest = require('xhr2');
+  var xhr = new XMLHttpRequest();
+  const url = process.env.TELEGRAM_URL + mensaje
+  xhr.open("GET", url)
+  xhr.send()
+
+}
